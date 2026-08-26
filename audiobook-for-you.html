@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>For Mumma 💜</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;min-height:100%;background:#08000f;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+body{
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
+  font-family:'Montserrat',sans-serif;
+  color:#F3EEE4;
+}
+
+#bg{
+  position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 130% 80% at 15% 8%,  rgba(212,162,76,0.5) 0%,transparent 55%),
+    radial-gradient(ellipse 100% 70% at 85% 5%,  rgba(255,196,90,0.4) 0%,transparent 50%),
+    radial-gradient(ellipse 90%  65% at 50% 95%, rgba(180,120,30,0.4) 0%,transparent 50%),
+    linear-gradient(160deg,#1a1206 0%,#0e0a04 45%,#150f05 100%);
+  animation:aurora 20s ease-in-out infinite alternate;
+}
+@keyframes aurora{
+  0%  {filter:hue-rotate(0deg)  brightness(1)}
+  50% {filter:hue-rotate(18deg) brightness(1.08)}
+  100%{filter:hue-rotate(-12deg)brightness(0.95)}
+}
+
+.card{
+  position:relative;z-index:2;
+  width:100%;max-width:440px;
+  background:linear-gradient(180deg, rgba(30,22,10,.55), rgba(15,10,5,.65));
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(255,220,150,.18);
+  border-radius:26px;
+  padding:34px 30px 30px;
+  box-shadow:0 24px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+.eyebrow{
+  font-size:10.5px;letter-spacing:3px;text-transform:uppercase;
+  color:#D4A24C;font-weight:600;margin-bottom:6px;
+}
+.chapter-title{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
+  font-size:24px;color:#FFFBF2;min-height:32px;margin-bottom:20px;
+  transition:opacity .6s ease;
+}
+
+.waveform{
+  display:flex;align-items:flex-end;gap:3px;height:36px;margin-bottom:26px;
+  opacity:.35;transition:opacity .6s ease;
+}
+.waveform.playing{opacity:1}
+.waveform span{
+  display:block;width:3px;border-radius:2px;
+  background:linear-gradient(180deg,#FFE9B0,#D4A24C);
+  animation:wf 1.1s ease-in-out infinite;
+  animation-play-state:paused;
+}
+.waveform.playing span{animation-play-state:running}
+@keyframes wf{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
+
+.narration{min-height:170px;display:flex;flex-direction:column;justify-content:center;gap:16px;margin-bottom:8px}
+.line{
+  font-family:'Cormorant Garamond',serif;font-size:19px;line-height:1.55;
+  color:rgba(243,238,228,.25);opacity:0;transform:translateY(6px);
+  transition:opacity 1s ease, color 1s ease, transform 1s ease;
+}
+.line.active{opacity:1;color:#FFFBF2;transform:translateY(0)}
+.line.done{opacity:1;color:rgba(243,238,228,.4);transform:translateY(0)}
+
+.final{
+  margin-top:14px;padding-top:18px;
+  border-top:1px solid rgba(255,220,150,.18);
+  font-family:'Cormorant Garamond',serif;font-size:22px;line-height:1.6;
+  text-align:center;
+  color:rgba(255,224,160,0);
+  opacity:0;transform:scale(.96);
+  transition:opacity 1.3s ease, color 1.3s ease, transform 1.3s ease;
+}
+.final.active{opacity:1;color:#ffe0a0;transform:scale(1)}
+.final .sig{
+  display:block;margin-top:10px;font-size:15px;letter-spacing:.05em;
+  color:#D4A24C;font-style:italic;
+}
+
+/* Press-play control */
+.playWrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:8px}
+.playBtn{
+  width:66px;height:66px;border-radius:50%;
+  background:linear-gradient(135deg,#FFD277,#B87B1E);
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;color:#3a2405;cursor:pointer;border:none;
+  box-shadow:0 10px 30px rgba(212,162,76,.4);
+  transition:transform .25s ease, box-shadow .25s ease, opacity .5s ease;
+}
+.playBtn:active{transform:scale(.92)}
+.playWrap.hide{opacity:0;pointer-events:none;height:0;margin:0;overflow:hidden}
+.playLabel{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,220,150,.65)}
+
+/* drifting hearts, ambient, ties back to the tree page */
+#hearts{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+
+@media (prefers-reduced-motion: reduce){
+  #bg, .waveform span{animation:none !important}
+}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+<div id="hearts"></div>
+
+<div class="card">
+  <div class="eyebrow">Now Playing</div>
+  <div class="chapter-title" id="chapterTitle">A Short Track, For You</div>
+
+  <div class="waveform" id="waveform"></div>
+
+  <div class="narration">
+    <p class="line" data-t="1">When you're all alone</p>
+    <p class="line" data-t="2">I will reach for you</p>
+    <p class="line" data-t="3">When you're feeling low</p>
+    <p class="line" data-t="4">I will be there too</p>
+  </div>
+
+  <div class="final" id="finalMsg">
+    Mumma ♥️💜 you like this, Puppy loves you 😘🫶🏻💜
+    <span class="sig">— your puppy</span>
+  </div>
+
+  <div class="playWrap" id="playWrap">
+    <button class="playBtn" id="playBtn" aria-label="Play">▶</button>
+    <div class="playLabel">Press play</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const waveform = document.getElementById('waveform');
+  const chapterTitle = document.getElementById('chapterTitle');
+  const lines = Array.from(document.querySelectorAll('.line'));
+  const finalMsg = document.getElementById('finalMsg');
+  const playBtn = document.getElementById('playBtn');
+  const playWrap = document.getElementById('playWrap');
+  const heartsCont = document.getElementById('hearts');
+
+  const BAR_COUNT = 26;
+  for(let i=0;i<BAR_COUNT;i++){
+    const b = document.createElement('span');
+    b.style.height = (8 + Math.random()*26) + 'px';
+    b.style.animationDelay = (Math.random()*1.1).toFixed(2)+'s';
+    waveform.appendChild(b);
+  }
+
+  const titles = [
+    'A Short Track, For You',
+    'The One Who Listens',
+    'A Different Kind of Love',
+    'The Last Line'
+  ];
+
+  let started = false;
+  function play(){
+    if(started) return;
+    started = true;
+    waveform.classList.add('playing');
+    playWrap.classList.add('hide');
+    spawnHearts();
+
+    const timings = [400, 3400, 6600, 10200]; // ms offsets for each reveal
+    lines.forEach((line, i)=>{
+      setTimeout(()=>{
+        line.classList.add('active');
+        lines.slice(0,i).forEach(l=>l.classList.add('done'));
+        chapterTitle.textContent = titles[i] || titles[titles.length-1];
+      }, timings[i]);
+    });
+
+    setTimeout(()=>{
+      lines.forEach(l=>l.classList.add('done'));
+      finalMsg.classList.add('active');
+      chapterTitle.textContent = titles[titles.length-1];
+    }, timings[timings.length-1] + 3200);
+  }
+
+  playBtn.addEventListener('click', play);
+  playBtn.addEventListener('touchstart', e=>{ e.preventDefault(); play(); }, {passive:false});
+
+  /* gentle ambient hearts drifting upward, echoes the tree page */
+  function spawnHearts(){
+    const style = document.createElement('style');
+    style.textContent = `@keyframes floatUp{
+      0%{transform:translateY(0) rotate(0deg);opacity:0}
+      10%{opacity:.7}
+      90%{opacity:.4}
+      100%{transform:translateY(-100vh) rotate(360deg);opacity:0}
+    }`;
+    document.head.appendChild(style);
+
+    function spawnOne(){
+      const el = document.createElement('div');
+      const sz = Math.random()*14+10;
+      const dur = (Math.random()*10+12).toFixed(1);
+      el.style.cssText = `position:absolute;left:${Math.random()*100}%;bottom:-30px;font-size:${sz}px;animation:floatUp ${dur}s linear forwards;opacity:.6`;
+      el.textContent = Math.random() > 0.5 ? '💛' : '✨';
+      heartsCont.appendChild(el);
+      setTimeout(()=>el.remove(), dur*1000+200);
+    }
+    for(let i=0;i<5;i++) setTimeout(spawnOne, i*700);
+    setInterval(spawnOne, 1800);
+  }
+})();
+</script>
+</body>
+</html>
